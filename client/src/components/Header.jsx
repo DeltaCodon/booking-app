@@ -1,23 +1,21 @@
-import React from "react";
-import searchIcon from "/house-search-svgrepo-com.svg";
+import React, { useContext } from "react";
 import houseIcon from "/house.svg";
+import SearchFilter from "./SearchFilter";
+import UserBar from "./UserBar";
+import { Link } from "react-router-dom";
 
-export const Header = () => {
+const Header = () => {
   return (
-    <header className="pt-7 pl-8 p-4 flex justify-between">
-      <a href="" className="flex items-center gap-1">
-        <img src={houseIcon} width="50" />
+    <header className="pt-1 flex justify-between">
+      <Link to={"/"} href="/" className="flex items-center gap-1  rounded-lg">
+        <img src={houseIcon} width="50" className="" />
 
-        <span className="text-[1.6rem] font-bold">Empyrean</span>
-      </a>
-      <div className="flex">
-        <div className="self-center">Anywhere</div>
-        <div className="self-center">Any Week</div>
-        <div className="self-center">Any Guests</div>
-        <button>
-          <img src={searchIcon} alt="Search Icon" width="35" />
-        </button>
-      </div>
+        <span className="text-[1.6rem] font-bold text-transparent bg-clip-text bg-gradient-to-r from-themeGold via-slate-300 to-themeBlue">
+          Empyrean
+        </span>
+      </Link>
+      <SearchFilter />
+      <UserBar />
     </header>
   );
 };
