@@ -52,7 +52,7 @@ const LoginPage = () => {
               setPassword(event.target.value);
             }}
           />
-          <button className="bg-themeBlue w-[150px] rounded-md self-center text-center">
+          <button className="bg-themeBlue w-[150px] rounded-md self-center text-center hover:bg-themeGold focus:outline-none focus:ring focus:ring-themeGold">
             Login
           </button>
           <div className="text-center py-2 text-slate-600">
