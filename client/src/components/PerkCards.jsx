@@ -23,6 +23,19 @@ const PerkCards = ({ selected, onSelected }) => {
     { name: "Shared Space", path: Shareing },
   ];
 
+  function handleCheckboxClick(ev) {
+    console.log(ev.target.checked);
+    console.log(ev.target.name);
+    const { checked, name } = ev.target;
+    if (checked) {
+      onSelected([...selected, name]);
+    } else {
+      onSelected([...selected.filter((selectedName) => selectedName !== name)]);
+    }
+
+    // onSelected([...selected, name]);
+  }
+
   return (
     <div className="grid grid-cols-2 md:grid md:grid-cols-4 lg:grid-cols-4 border mt-2 p-4 gap-2">
       {perkImgPaths.map((checkboxes) => {
@@ -36,6 +49,8 @@ const PerkCards = ({ selected, onSelected }) => {
               id={checkboxes.name}
               type="checkbox"
               className="w-[15px] checked:accent-themeGold checked:text-white border-black checked:rounded focus:ring-themeBlue"
+              name={checkboxes.name}
+              onChange={handleCheckboxClick}
             />
             <img src={checkboxes.path} width={27} />
             <span className="">{checkboxes.name}</span>

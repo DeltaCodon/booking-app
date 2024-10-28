@@ -13,6 +13,6 @@ const PlaceSchema = new mongoose.Schema({
   maxGuest: Number,
 });
 
-const PlaceModel = mongoose.model("Place", placeSchema);
+const PlaceModel = mongoose.model("Place", PlaceSchema);
 
 module.exports = PlaceSchema;

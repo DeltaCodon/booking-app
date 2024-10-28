@@ -30,7 +30,7 @@ const AccountPage = () => {
   }
 
   function linkClasses(type = null) {
-    let classes = "inline-flex gap-1 py-2 px-6 ";
+    let classes = "flex justify-center inline-flex gap-1 py-2 px-6 ";
     if (type === subpage) {
       classes +=
         "bg-themeBlue rounded-full text-white gap-2 hover:bg-themeGold focus:outline-none focus:ring focus:ring-themeGold";
