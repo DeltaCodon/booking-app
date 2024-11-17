@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import PerkCards from "./PerkCards";
 import PhotosUploader from "./PhotosUploader";
-import { Navigate } from "react-router-dom";
-import axios from "axios";
+import { Navigate, useParams } from "react-router-dom";
 import AccountNavigation from "./AccountNavigation";
+import axios from "axios";
 
 const PlacesForm = () => {
+  const { id } = useParams();
+  console.log({ id });
+
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
   const [addedPhotos, setAddedPhotos] = useState([]);
@@ -16,29 +19,56 @@ const PlacesForm = () => {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [maxGuests, setMaxGuests] = useState(1);
+  const [prices, setPrices] = useState();
   const [redirectPlaceList, setRedirectPlaceList] = useState(false);
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+    axios.get("/places/" + id).then((response) => {
+      const { data } = response;
+      setTitle(data.title);
+      setAddress(data.address);
+      setAddedPhotos(data.media);
+      setDescription(data.description);
+      setPerks(data.perks);
+      setExtraInfo(data.extraInfo);
+      setCheckIn(data.checkIn);
+      setCheckOut(data.checkOut);
+      setMaxGuests(data.maxGuests);
+      setPrices(data.prices);
+    });
+  }, [id]);
 
   const checkDetails = [
     {
       name: "Check-in time",
-      path: "16:00",
-      inputType: "text",
+      placeholder: "10:00",
+      inputType: "datetime-local",
       state: checkIn,
       setState: setCheckIn,
     },
     {
       name: "Check-out time",
-      path: "10:00",
-      inputType: "text",
+      placeholder: "10:00",
+      inputType: "datetime-local",
       state: checkOut,
       setState: setCheckOut,
     },
     {
       name: "Max guest(s)",
-      path: "6",
+      placeholder: "6",
       inputType: "number",
       state: maxGuests,
       setState: setMaxGuests,
+    },
+    {
+      name: "Price per night (USD)",
+      placeholder: "$150.99",
+      inputType: "number",
+      state: prices,
+      setState: setPrices,
     },
   ];
 
@@ -59,9 +89,10 @@ const PlacesForm = () => {
     );
   }
 
-  async function addNewPlace(ev) {
+  async function savePlace(ev) {
     ev.preventDefault();
     const placeData = {
+      id,
       title,
       address,
       addedPhotos,
@@ -71,12 +102,19 @@ const PlacesForm = () => {
       checkIn,
       checkOut,
       maxGuests,
+      prices,
     };
-    await axios.get("/places", placeData);
+    if (id) {
+      //update
+      await axios.put("/places", { id, ...placeData });
+    } else {
+      //new place
+      await axios.put("/places", placeData);
+    }
     setRedirectPlaceList(true);
   }
 
-  if (redirectPlaceList && action !== "new") {
+  if (redirectPlaceList) {
     return <Navigate to={"/account/places"} />;
   }
 
@@ -84,7 +122,7 @@ const PlacesForm = () => {
     <>
       <AccountNavigation />
       <div className="">
-        <form action="" className="" onSubmit={addNewPlace}>
+        <form action="" className="" onSubmit={savePlace}>
           {preInput("Title", "Customize the name for your place")}
           <input
             required
@@ -137,7 +175,7 @@ const PlacesForm = () => {
 
           {preInput(
             "Check-in/out details:",
-            "Add check-in, check-out, and max guests"
+            "Add check-in, check-out, and maximum guests"
           )}
           <div className="grid gap-2 sm:grid-cols-3">
             {checkDetails.map((detail) => {
@@ -147,8 +185,10 @@ const PlacesForm = () => {
                   <input
                     required
                     type={detail.inputType}
-                    placeholder={detail.path}
+                    placeholder={detail.placeholder}
                     value={detail.state}
+                    min="0"
+                    step="any"
                     onChange={(ev) => detail.setState(ev.target.value)}
                   />
                 </div>

@@ -16,6 +16,7 @@ const app = express();
 const bcryptSalt = bcrypt.genSaltSync(12);
 const jwtSecret = "g3gfsdG$4gsFGG24gHHsdfsdh$fg4fgrgFgop91cS";
 
+mongoose.connect(process.env.MONOGO_URL);
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
@@ -26,8 +27,6 @@ app.use(
     origin: "http://localhost:5173",
   })
 );
-
-mongoose.connect(process.env.MONOGO_URL);
 
 app.get("/test", (req, res) => {
   res.json("test ok");
@@ -119,29 +118,91 @@ app.post("/places", (req, res) => {
   const {
     title,
     address,
+    addedPhotos,
     description,
     perks,
     extraInfo,
     checkIn,
     checkOut,
     maxGuests,
+    prices,
   } = req.body;
-  jwt.verify(token, jwtSecret, {}, async (err, tokenData) => {
+
+  jwt.verify(token, jwtSecret, {}, async (err, userData) => {
     if (err) throw err;
+
     const placeDoc = await Place.create({
-      owner: tokenData.id,
+      owner: userData.id,
       title,
       address,
-      media,
+      media: addedPhotos,
       description,
       perks,
       extraInfo,
       checkIn,
       checkOut,
       maxGuests,
+      prices,
     });
+
     res.json(placeDoc);
   });
+});
+
+app.get("/user-places", (req, res) => {
+  const { token } = req.cookies;
+
+  jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+    const { id } = userData;
+    res.json(await Place.find({ owner: id }));
+  });
+});
+
+app.get("/places/:id", async (req, res) => {
+  const { id } = req.params;
+  res.json(await Place.findById(id));
+});
+
+app.put("/places", async (req, res) => {
+  const { token } = req.cookies;
+  const {
+    id,
+    title,
+    address,
+    addedPhotos,
+    description,
+    perks,
+    extraInfo,
+    checkIn,
+    checkOut,
+    maxGuests,
+    prices,
+  } = req.body;
+
+  jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+    if (err) throw err;
+    const placeDoc = await Place.findById(id);
+    if (userData.id === placeDoc.owner.toString()) {
+      placeDoc.set({
+        title,
+        address,
+        media: addedPhotos,
+        description,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+        prices,
+      });
+      await placeDoc.save();
+      res.json("All Good!");
+    }
+  });
+});
+
+app.get("/places", async (req, res) => {
+  res.json(await Place.find());
 });
 
 app.listen(4000);

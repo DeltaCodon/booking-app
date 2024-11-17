@@ -24,16 +24,12 @@ const PerkCards = ({ selected, onSelected }) => {
   ];
 
   function handleCheckboxClick(ev) {
-    console.log(ev.target.checked);
-    console.log(ev.target.name);
     const { checked, name } = ev.target;
     if (checked) {
       onSelected([...selected, name]);
     } else {
       onSelected([...selected.filter((selectedName) => selectedName !== name)]);
     }
-
-    // onSelected([...selected, name]);
   }
 
   return (
@@ -43,12 +39,13 @@ const PerkCards = ({ selected, onSelected }) => {
           <label
             key={checkboxes.name}
             htmlFor={checkboxes.name}
-            className="flex peer border border-themeBlue p-4 rounded-xl items-center gap-2 has-[:checked]:border-themeGold shadow-md has-[:checked]:shadow-none has-[:checked]:bg-gray-50  cursor-pointer"
+            className="flex text-sm bg-white border border-themeBlue py-4 px-1 rounded-xl items-center gap-2 has-[:checked]:border-themeGold shadow-lg has-[:checked]:shadow-none has-[:checked]:bg-slate-50 cursor-pointer"
           >
             <input
               id={checkboxes.name}
               type="checkbox"
-              className="w-[15px] checked:accent-themeGold checked:text-white border-black checked:rounded focus:ring-themeBlue"
+              className="ml-2 checked:accent-themeGold checked:text-white border-black checked:rounded focus:ring-themeBlue"
+              checked={selected.includes(checkboxes.name)}
               name={checkboxes.name}
               onChange={handleCheckboxClick}
             />

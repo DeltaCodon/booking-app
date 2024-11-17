@@ -5,6 +5,12 @@
 input[type="text"],
 input[type="password"],
 input[type="email"],
-input[type="number"] {
+input[type="number"],
+input[type="time"],
+input[type="date"],
+input[type="datetime-local"] {
   @apply w-full items-stretch border my-2 py-2 px-3 rounded-xl;
+}
+textarea {
+  height: 140px;
 }
