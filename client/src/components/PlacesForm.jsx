@@ -149,7 +149,7 @@ const PlacesForm = () => {
 
           {preInput("Description", "Description of the place")}
           <textarea
-            className="border shadow"
+            className="border shadow whitespace-pre-line"
             name=""
             cols="45"
             rows="4"
@@ -165,7 +165,7 @@ const PlacesForm = () => {
             "House rules, directions, minor details, etc."
           )}
           <textarea
-            className="border shadow"
+            className="border shadow whitespace-pre-line"
             name=""
             cols="45"
             rows="4"

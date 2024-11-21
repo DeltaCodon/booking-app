@@ -13,4 +13,5 @@ input[type="datetime-local"] {
 }
 textarea {
   height: 140px;
+  white-space: break-spaces;
 }

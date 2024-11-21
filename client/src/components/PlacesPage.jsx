@@ -43,7 +43,9 @@ function PlacesPage() {
               </div>
               <div className="grow-0 shrink">
                 <h2 className="text-xl">{place.title}</h2>
-                <p className="text-sm mt-2">{place.description}</p>
+                <p className="text-sm mt-2 whitespace-pre-line">
+                  {place.description}
+                </p>
               </div>
             </Link>
           ))}
