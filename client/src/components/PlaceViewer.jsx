@@ -4,6 +4,7 @@ import axios from "axios";
 import morePhotos from "/morePhotosIcon.svg";
 import PhotoModal from "./PhotoModal";
 import addressPin from "/addressPinIcon.svg";
+import finalDateTimeFunction from "../utils/myTimeFormatter";
 
 const PlaceViewer = () => {
   const { id } = useParams();
@@ -96,21 +97,53 @@ const PlaceViewer = () => {
         <h2 className="font-semibold text-2xl ">Description</h2>
         {place.description}
       </div>
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-2 md:pr-6">
         <div>
           <b>Check-In: </b>
-          {place.checkIn.replace("T", " at ")}
+          {finalDateTimeFunction(place.checkIn)}
           <br />
           <b>Check-Out: </b>
-          {place.checkOut.replace("T", " at ")}
+          {finalDateTimeFunction(place.checkOut)}
           <br />
           <b>Max Guests: </b>
           {place.maxGuests}
+          <br />
+          {place.checkIn}
         </div>
-        <div>
-          <div className="bg-white shadow p-4 reounded-2xl">
-            <div className="text-2xl">Price: per night</div>
-            <button className="bg-themeBlue">Book this place</button>
+        <div className="w-fit">
+          <div className="bg-white shadow py-3 px- rounded-2xl w-fit">
+            <div className="text-2xl text-center">
+              Price: ${place.prices} / per night
+            </div>
+            <div className="border rounded-2xl mt-4">
+              <div className=" md:flex bg-green-100 rounded-2xl">
+                <div className="rounded-l-2xl border py-1 px-4 ">
+                  <label htmlFor="" className="">
+                    Check In:{" "}
+                  </label>
+                  <input type="date" className="bg-gray-50" />
+                </div>
+                <div className="rounded-r-2xl border py-1 px-4  ">
+                  <label htmlFor="" className="">
+                    Check Out:{" "}
+                  </label>
+                  <input type="date" className="bg-gray-50  " />
+                </div>
+              </div>
+              <div className="rounded-b-2xl border py-2 px-4  ">
+                <label htmlFor="" className="">
+                  Max Guests:{" "}
+                </label>
+                <input
+                  type="number"
+                  value={1}
+                  className="bg-gray-50 max-w-fit"
+                />
+              </div>
+            </div>
+            <button className="flex mt-4 basic-button place-self-center justify-center w-9/12">
+              Book this place
+            </button>
           </div>
         </div>
       </div>

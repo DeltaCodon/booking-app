@@ -15,3 +15,6 @@ textarea {
   height: 140px;
   white-space: break-spaces;
 }
+.basic-button {
+  @apply bg-themeBlue rounded-md text-center border hover:border-themeBlue hover:bg-themeGold focus:outline-none focus:ring focus:ring-themeBlue;
+}
