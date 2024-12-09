@@ -8,7 +8,6 @@ import axios from "axios";
 
 const PlacesForm = () => {
   const { id } = useParams();
-  console.log({ id });
 
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
@@ -149,7 +148,7 @@ const PlacesForm = () => {
 
           {preInput("Description", "Description of the place")}
           <textarea
-            className="border shadow whitespace-pre-line"
+            className="border shadow whitespace-pre-wrap"
             name=""
             cols="45"
             rows="4"
@@ -165,7 +164,7 @@ const PlacesForm = () => {
             "House rules, directions, minor details, etc."
           )}
           <textarea
-            className="border shadow whitespace-pre-line"
+            className="border shadow whitespace-pre-wrap"
             name=""
             cols="45"
             rows="4"

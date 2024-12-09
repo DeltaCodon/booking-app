@@ -4,7 +4,8 @@ import axios from "axios";
 import morePhotos from "/morePhotosIcon.svg";
 import PhotoModal from "./PhotoModal";
 import addressPin from "/addressPinIcon.svg";
-import finalDateTimeFunction from "../utils/myTimeFormatter";
+import { finalDateTimeFunction } from "../utils/myTimeFormatter";
+import BookingWidget from "./BookingWidget";
 
 const PlaceViewer = () => {
   const { id } = useParams();
@@ -30,11 +31,11 @@ const PlaceViewer = () => {
   }
 
   return (
-    <div className="mt-8 bg-slate-200 -mx-8 px-8 py-">
+    <div className="mt-8 bg-slate-200 -mx-8 px-8 pt-5">
       <PhotoModal ref={dialog} allPhotos={place} onReset={resetModal} />
       <h1 className="text-3xl">{place.title}</h1>
       <a
-        className="flex my-2 block font-semibold underline"
+        className="flex my-2 block font-semibold underline w-36"
         href={"https://maps.google.com/?q=" + place.address}
         target="_blank"
       >
@@ -45,7 +46,7 @@ const PlaceViewer = () => {
         />
         {place.address}
       </a>
-      <div className="relative">
+      <div className="relative mb">
         <div
           id="middle"
           className="grid grid-cols-[1fr_1fr] gap-2 sm: grid sm:grid-cols-[2fr_1fr] md:grid md:grid-cols-[2fr_1fr] lg:grid lg:grid-cols-[2fr_1fr]"
@@ -67,6 +68,7 @@ const PlaceViewer = () => {
                 className="rounded-r-2xl object-cover aspect-square w-[50px] h-[50px] min-h-[132.77px] min-w-[130.77px] sm:w-full sm:h-full md:w-full md:h-full lg:w-full lg:h-full max-h-[262px]"
                 src={"http://localhost:4000/uploads/" + place.media?.[1]}
                 alt="More images of the unit"
+                onClick={() => showModal()}
               />
             )}
             <div className="overflow-hidden">
@@ -75,6 +77,7 @@ const PlaceViewer = () => {
                   className="rounded-r-2xl object-cover aspect-square relative top-2 w-[60px] h-[60px] min-h-[132.77px] min-w-[130.77px] sm:w-full sm:h-full md:w-full md:h-full lg:w-full lg:h-full  max-h-[262px]"
                   src={"http://localhost:4000/uploads/" + place.media?.[2]}
                   alt="More images of the unit"
+                  onClick={() => showModal()}
                 />
               )}
             </div>
@@ -93,12 +96,12 @@ const PlaceViewer = () => {
         </button>
       </div>
       {/*Remeber this "whitespace-pre-line" BS for textareas and the tag for the text. You'll need it again one day */}
-      <div className="my-4 whitespace-pre-line">
-        <h2 className="font-semibold text-2xl ">Description</h2>
-        {place.description}
-      </div>
-      <div className="grid grid-cols-2 md:pr-6">
-        <div>
+      <div className="grid md:grid-cols-[2fr_1fr] gap-4 mt-6 mb-4">
+        <div className="">
+          <div className=" my-4 whitespace-pre-line text-wrap">
+            <h2 className="font-semibold text-2xl ">Description</h2>
+            {place.description}
+          </div>
           <b>Check-In: </b>
           {finalDateTimeFunction(place.checkIn)}
           <br />
@@ -108,42 +111,16 @@ const PlaceViewer = () => {
           <b>Max Guests: </b>
           {place.maxGuests}
           <br />
-          {place.checkIn}
         </div>
-        <div className="w-fit">
-          <div className="bg-white shadow py-3 px- rounded-2xl w-fit">
-            <div className="text-2xl text-center">
-              Price: ${place.prices} / per night
-            </div>
-            <div className="border rounded-2xl mt-4">
-              <div className=" md:flex bg-green-100 rounded-2xl">
-                <div className="rounded-l-2xl border py-1 px-4 ">
-                  <label htmlFor="" className="">
-                    Check In:{" "}
-                  </label>
-                  <input type="date" className="bg-gray-50" />
-                </div>
-                <div className="rounded-r-2xl border py-1 px-4  ">
-                  <label htmlFor="" className="">
-                    Check Out:{" "}
-                  </label>
-                  <input type="date" className="bg-gray-50  " />
-                </div>
-              </div>
-              <div className="rounded-b-2xl border py-2 px-4  ">
-                <label htmlFor="" className="">
-                  Max Guests:{" "}
-                </label>
-                <input
-                  type="number"
-                  value={1}
-                  className="bg-gray-50 max-w-fit"
-                />
-              </div>
-            </div>
-            <button className="flex mt-4 basic-button place-self-center justify-center w-9/12">
-              Book this place
-            </button>
+        <div>
+          <BookingWidget place={place} />
+        </div>
+      </div>
+      <div className=" bg-white -mx-8 px-7 py-8 border-t border-gray-300">
+        <div>
+          <h2 className="font-semibold text-2xl">Extra Info: </h2>
+          <div className="whitespace-pre-line mb-4 mt-1 text-sm text-gray-700 leading-5">
+            {place.extraInfo}
           </div>
         </div>
       </div>
