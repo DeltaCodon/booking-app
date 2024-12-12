@@ -1,6 +1,6 @@
 const arrObjMonths = [
   { month: "January", monthNumber: "01", monthDays: "31" },
-  { month: "February", monthNumber: "02", monthDays: "28", monthLeap: "29" },
+  { month: "February", monthNumber: "02", monthDays: "28" },
   { month: "March", monthNumber: "03", monthDays: "31" },
   { month: "April", monthNumber: "04", monthDays: "30" },
   { month: "May", monthNumber: "05", monthDays: "31" },
@@ -45,6 +45,22 @@ export function finalDateTimeFunction(datetimeLocal) {
   return `${month} ${day}, ${year} at ${newTime}`;
 }
 
+function checkLeapYear(yearInitial, yearFinal) {
+  if (yearFinal === yearInitial) {
+    if (yearFinal % 400 == 0 || (yearFinal % 4 == 0 && yearFinal % 100 != 0)) {
+      return true;
+    }
+    return false;
+  }
+
+  for (let i = yearInitial; i < yearFinal; i++) {
+    if (i % 400 == 0 || (i % 4 == 0 && i % 100 != 0)) {
+      return true;
+    }
+    return false;
+  }
+}
+
 export function differenceInDate(initialDay, finalDay) {
   const [monthNameInitial, dayInitial, yearInitial] = dateFormatty(initialDay);
   const monthNumInitial = arrObjMonths.find(
@@ -67,16 +83,12 @@ export function differenceInDate(initialDay, finalDay) {
     year: Number(yearFinal),
   };
 
-  const daysBetween = 0;
-  const monthsBewteen = 0;
-  const yearsBetween = 0;
-
-  // TODO: Make sure to calculate the year in the logic so math adds up, and to make the days add up to 30,31,28, or 29 days in the arithmatic.
-
+  // if block determines if the start date inputted is not the same day or older in time than the end date.
   if (
     startDate.year > endDate.year ||
-    startDate.month > endDate.month ||
-    startDate.day >= endDate.day
+    (startDate.year > endDate.year &&
+      startDate.month > endDate.month &&
+      startDate.day >= endDate.day)
   ) {
     console.error(
       "Starting date needs to be a date prior to ending date by at least one (1) day.",
@@ -84,8 +96,40 @@ export function differenceInDate(initialDay, finalDay) {
       endDate
     );
     return undefined;
-  } else {
   }
 
-  return;
+  let daysBetween = endDate.day - startDate.day;
+  let monthsBewteen = endDate.month - startDate.month;
+  let yearsBetween = endDate.year - startDate.year;
+  let startingMonth = startDate.month;
+
+  if (yearsBetween > 0) {
+    monthsBewteen += yearsBetween * 12;
+  }
+
+  if (monthsBewteen > 0) {
+    for (let iterator = 0; iterator < monthsBewteen; iterator++) {
+      if (startingMonth >= 13) {
+        startingMonth -= 12;
+      }
+
+      daysBetween += Number(
+        arrObjMonths.find(
+          (element) => Number(element.monthNumber) == startingMonth
+        )?.monthDays
+      );
+
+      if (startingMonth == 2) {
+        if (checkLeapYear(startDate.year, endDate.year)) {
+          daysBetween++;
+        }
+      }
+      startingMonth++;
+
+      console.log(startingMonth, daysBetween, monthsBewteen);
+    }
+  }
+  console.log(daysBetween);
+
+  return daysBetween;
 }
