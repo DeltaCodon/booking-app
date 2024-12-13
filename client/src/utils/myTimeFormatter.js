@@ -86,50 +86,50 @@ export function differenceInDate(initialDay, finalDay) {
   // if block determines if the start date inputted is not the same day or older in time than the end date.
   if (
     startDate.year > endDate.year ||
-    (startDate.year > endDate.year &&
-      startDate.month > endDate.month &&
+    (startDate.year >= endDate.year && startDate.month > endDate.month) ||
+    (startDate.year >= endDate.year &&
+      startDate.month >= endDate.month &&
       startDate.day >= endDate.day)
   ) {
     console.error(
-      "Starting date needs to be a date prior to ending date by at least one (1) day.",
-      startDate,
-      endDate
+      "Starting date needs to be a date prior to ending date by at least one (1) day."
+      // startDate,
+      // endDate
     );
     return undefined;
-  }
+  } else {
+    let daysBetween = endDate.day - startDate.day;
+    let monthsBewteen = endDate.month - startDate.month;
+    let yearsBetween = endDate.year - startDate.year;
+    let startingMonth = startDate.month;
 
-  let daysBetween = endDate.day - startDate.day;
-  let monthsBewteen = endDate.month - startDate.month;
-  let yearsBetween = endDate.year - startDate.year;
-  let startingMonth = startDate.month;
-
-  if (yearsBetween > 0) {
-    monthsBewteen += yearsBetween * 12;
-  }
-
-  if (monthsBewteen > 0) {
-    for (let iterator = 0; iterator < monthsBewteen; iterator++) {
-      if (startingMonth >= 13) {
-        startingMonth -= 12;
-      }
-
-      daysBetween += Number(
-        arrObjMonths.find(
-          (element) => Number(element.monthNumber) == startingMonth
-        )?.monthDays
-      );
-
-      if (startingMonth == 2) {
-        if (checkLeapYear(startDate.year, endDate.year)) {
-          daysBetween++;
-        }
-      }
-      startingMonth++;
-
-      console.log(startingMonth, daysBetween, monthsBewteen);
+    if (yearsBetween > 0) {
+      monthsBewteen += yearsBetween * 12;
     }
-  }
-  console.log(daysBetween);
 
-  return daysBetween;
+    if (monthsBewteen > 0) {
+      for (let iterator = 0; iterator < monthsBewteen; iterator++) {
+        if (startingMonth > 12) {
+          startingMonth -= 12;
+        }
+
+        daysBetween += Number(
+          arrObjMonths.find(
+            (element) => Number(element.monthNumber) == startingMonth
+          )?.monthDays
+        );
+
+        if (startingMonth == 2) {
+          if (checkLeapYear(startDate.year, endDate.year)) {
+            daysBetween++;
+          }
+        }
+        startingMonth++;
+      }
+      // console.log(startingMonth, daysBetween, monthsBewteen);
+    }
+    // console.log(daysBetween);
+
+    return daysBetween;
+  }
 }

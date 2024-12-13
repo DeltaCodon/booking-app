@@ -2,6 +2,7 @@ import React from "react";
 
 const CustomWidgetInfo = ({
   title,
+  placeholder = "",
   type,
   divClassName,
   inputClassName,
@@ -9,13 +10,14 @@ const CustomWidgetInfo = ({
   setState,
 }) => {
   return (
-    <div className={divClassName + " border py-1 px-4 "}>
+    <div className={divClassName + " py-1 px-4"}>
       <label htmlFor="" className="">
         {`${title}: `}
       </label>
       <input
+        placeholder={placeholder}
         type={type}
-        className={inputClassName + " bg-gray-50"}
+        className={"bg-gray-50 " + inputClassName}
         value={state}
         onChange={(ev) => setState(ev.target.value)}
       />

@@ -10,6 +10,7 @@ const cookieParser = require("cookie-parser");
 const imageDownloader = require("image-downloader");
 const multer = require("multer");
 const fs = require("fs");
+const BookingModel = require("./models/Booking.js");
 
 const app = express();
 
@@ -203,6 +204,25 @@ app.put("/places", async (req, res) => {
 
 app.get("/places", async (req, res) => {
   res.json(await Place.find());
+});
+
+app.post("/bookings", (req, res) => {
+  const { place, checkIn, checkOut, maxGuests, name, phone } = req.body;
+  BookingModel.create({
+    place,
+    checkIn,
+    checkOut,
+    maxGuests,
+    fullName,
+    mobile,
+  })
+    .then((err, doc) => {
+      if (err) throw err;
+      res.json("ok -->", doc);
+    })
+    .catch((err) => {
+      throw err;
+    });
 });
 
 app.listen(4000);
