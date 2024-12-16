@@ -6,11 +6,11 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const User = require("./models/Users.js");
 const Place = require("./models/Place.js");
+const Booking = require("./models/Booking.js");
 const cookieParser = require("cookie-parser");
 const imageDownloader = require("image-downloader");
 const multer = require("multer");
 const fs = require("fs");
-const BookingModel = require("./models/Booking.js");
 
 const app = express();
 
@@ -18,6 +18,7 @@ const bcryptSalt = bcrypt.genSaltSync(12);
 const jwtSecret = "g3gfsdG$4gsFGG24gHHsdfsdh$fg4fgrgFgop91cS";
 
 mongoose.connect(process.env.MONOGO_URL);
+
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
@@ -28,6 +29,15 @@ app.use(
     origin: "http://localhost:5173",
   })
 );
+
+function getUserDataFromRequest(request) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(request.cookies.token, jwtSecret, {}, async (err, userData) => {
+      if (err) throw err;
+      resolve(userData);
+    });
+  });
+}
 
 app.get("/test", (req, res) => {
   res.json("test ok");
@@ -206,23 +216,31 @@ app.get("/places", async (req, res) => {
   res.json(await Place.find());
 });
 
-app.post("/bookings", (req, res) => {
-  const { place, checkIn, checkOut, maxGuests, name, phone } = req.body;
-  BookingModel.create({
+app.post("/bookings", async (req, res) => {
+  const userData = await getUserDataFromRequest(req);
+  const { place, checkIn, checkOut, maxGuests, fullName, mobile, price } =
+    req.body;
+  Booking.create({
+    user: userData.id,
     place,
     checkIn,
     checkOut,
     maxGuests,
     fullName,
     mobile,
+    price,
   })
-    .then((err, doc) => {
-      if (err) throw err;
-      res.json("ok -->", doc);
+    .then((doc) => {
+      res.json(doc);
     })
     .catch((err) => {
       throw err;
     });
+});
+
+app.get("/bookings", async (res, req) => {
+  const userData = await getUserDataFromRequest(req);
+  res.json(await Booking.find({ user: userData.id }).populate("place"));
 });
 
 app.listen(4000);

@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CustomWidgetInfo from "./CustomWidgetInfo.jsx";
 import { differenceInDate } from "../utils/myTimeFormatter.js";
 import { Navigate } from "react-router-dom";
+import axios from "axios";
+import { UserContext } from "../UserContext.jsx";
 
 const BookingWidget = ({ place }) => {
   const [checkIn, setCheckIn] = useState("");
@@ -10,6 +12,13 @@ const BookingWidget = ({ place }) => {
   const [fullName, setFullName] = useState("");
   const [mobile, setMobile] = useState("");
   const [redirect, setRedirect] = useState("");
+  const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    if (user) {
+      setFullName(user.name);
+    }
+  }, [user]);
 
   let dateRed = " ";
 
@@ -19,7 +28,7 @@ const BookingWidget = ({ place }) => {
   }
 
   async function bookThisPlace() {
-    const data = {
+    const response = await axios.post("/bookings", {
       checkIn,
       checkOut,
       maxGuests,
@@ -27,14 +36,13 @@ const BookingWidget = ({ place }) => {
       mobile,
       place: place._id,
       price: (numberOfNights * place.prices).toFixed(2),
-    };
-    await axios.post("bookings", data);
-    const bookingId = response.date._id;
+    });
+    const bookingId = response.data._id;
     setRedirect(`/account/bookings/${bookingId}`);
+  }
 
-    if (redirect) {
-      return <Navigate to={redirect} />;
-    }
+  if (redirect) {
+    return <Navigate to={redirect} />;
   }
 
   return (
@@ -100,7 +108,7 @@ const BookingWidget = ({ place }) => {
               Book this place ${(numberOfNights * place.prices).toFixed(2)}
             </span>
           ) : (
-            <span>"Check Start and End date again."</span>
+            <span>Check Start and End date.</span>
           )}
         </button>
       </div>
