@@ -39,12 +39,12 @@ function getUserDataFromRequest(request) {
   });
 }
 
-app.get("/test", (req, res) => {
-  res.json("test ok");
+app.get("/test", (request, response) => {
+  response.json("test ok");
 });
 
-app.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+app.post("/register", async (request, response) => {
+  const { name, email, password } = request.body;
 
   try {
     const userDoc = await User.create({
@@ -53,14 +53,14 @@ app.post("/register", async (req, res) => {
       password: bcrypt.hashSync(password, bcryptSalt),
     });
 
-    res.json(userDoc);
+    response.json(userDoc);
   } catch (error) {
-    res.status(422).json(error);
+    response.status(422).json(error);
   }
 });
 
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+app.post("/login", async (request, response) => {
+  const { email, password } = request.body;
   const userDoc = await User.findOne({ email });
   if (userDoc) {
     const passOK = bcrypt.compareSync(password, userDoc.password);
@@ -71,61 +71,65 @@ app.post("/login", async (req, res) => {
         {},
         (err, token) => {
           if (err) throw err;
-          res.cookie("token", token).json(userDoc);
+          response.cookie("token", token).json(userDoc);
         }
       );
     } else {
-      res.status(422).json("password not okay");
+      response.status(422).json("password not okay");
     }
   } else {
-    res.status(422).json("not found");
+    response.status(422).json("not found");
   }
 });
 
-app.get("/profile", (req, res) => {
-  const { token } = req.cookies;
+app.get("/profile", (request, response) => {
+  const { token } = request.cookies;
   if (token) {
     jwt.verify(token, jwtSecret, {}, async (err, tokenData) => {
       if (err) throw err;
       const { email, name, _id } = await User.findById(tokenData.id);
-      res.json({ email, name, _id });
+      response.json({ email, name, _id });
     });
   } else {
-    res.json(null);
+    response.json(null);
   }
 });
 
-app.post("/logout", (req, res) => {
-  res.cookie("token", "").json(true);
+app.post("/logout", (request, response) => {
+  response.cookie("token", "").json(true);
 });
 
-app.post("/upload-by-link", async (req, res) => {
-  const { link } = req.body;
+app.post("/upload-by-link", async (request, response) => {
+  const { link } = request.body;
   const newName = "media" + Date.now() + ".jpg";
   await imageDownloader.image({
     url: link,
     dest: __dirname + "/uploads/" + newName,
   });
 
-  res.json(newName);
+  response.json(newName);
 });
 
 const photosMiddleware = multer({ dest: "uploads/" });
-app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
-  const uploadedFiles = [];
-  for (let i = 0; i < req.files.length; i++) {
-    const { path, originalname } = req.files[i];
-    const parts = originalname.split(".");
-    const ext = parts[parts.length - 1];
-    const newPath = path + "." + ext;
-    fs.renameSync(path, newPath);
-    uploadedFiles.push(newPath.replace("uploads/", ""));
+app.post(
+  "/upload",
+  photosMiddleware.array("photos", 100),
+  (request, response) => {
+    const uploadedFiles = [];
+    for (let i = 0; i < request.files.length; i++) {
+      const { path, originalname } = request.files[i];
+      const parts = originalname.split(".");
+      const ext = parts[parts.length - 1];
+      const newPath = path + "." + ext;
+      fs.renameSync(path, newPath);
+      uploadedFiles.push(newPath.replace("uploads/", ""));
+    }
+    response.json(uploadedFiles);
   }
-  res.json(uploadedFiles);
-});
+);
 
-app.post("/places", (req, res) => {
-  const { token } = req.cookies;
+app.post("/places", (request, response) => {
+  const { token } = request.cookies;
   const {
     title,
     address,
@@ -137,7 +141,7 @@ app.post("/places", (req, res) => {
     checkOut,
     maxGuests,
     prices,
-  } = req.body;
+  } = request.body;
 
   jwt.verify(token, jwtSecret, {}, async (err, userData) => {
     if (err) throw err;
@@ -156,26 +160,26 @@ app.post("/places", (req, res) => {
       prices,
     });
 
-    res.json(placeDoc);
+    response.json(placeDoc);
   });
 });
 
-app.get("/user-places", (req, res) => {
-  const { token } = req.cookies;
+app.get("/user-places", (request, response) => {
+  const { token } = request.cookies;
 
   jwt.verify(token, jwtSecret, {}, async (err, userData) => {
     const { id } = userData;
-    res.json(await Place.find({ owner: id }));
+    response.json(await Place.find({ owner: id }));
   });
 });
 
-app.get("/places/:id", async (req, res) => {
-  const { id } = req.params;
-  res.json(await Place.findById(id));
+app.get("/places/:id", async (request, response) => {
+  const { id } = request.params;
+  response.json(await Place.findById(id));
 });
 
-app.put("/places", async (req, res) => {
-  const { token } = req.cookies;
+app.put("/places", async (request, response) => {
+  const { token } = request.cookies;
   const {
     id,
     title,
@@ -188,7 +192,7 @@ app.put("/places", async (req, res) => {
     checkOut,
     maxGuests,
     prices,
-  } = req.body;
+  } = request.body;
 
   jwt.verify(token, jwtSecret, {}, async (err, userData) => {
     if (err) throw err;
@@ -207,19 +211,19 @@ app.put("/places", async (req, res) => {
         prices,
       });
       await placeDoc.save();
-      res.json("All Good!");
+      response.json("All Good!");
     }
   });
 });
 
-app.get("/places", async (req, res) => {
-  res.json(await Place.find());
+app.get("/places", async (request, response) => {
+  response.json(await Place.find());
 });
 
-app.post("/bookings", async (req, res) => {
+app.post("/bookings", async (request, response) => {
   const userData = await getUserDataFromRequest(req);
   const { place, checkIn, checkOut, maxGuests, fullName, mobile, price } =
-    req.body;
+    request.body;
   Booking.create({
     user: userData.id,
     place,
@@ -231,16 +235,16 @@ app.post("/bookings", async (req, res) => {
     price,
   })
     .then((doc) => {
-      res.json(doc);
+      response.json(doc);
     })
     .catch((err) => {
       throw err;
     });
 });
 
-app.get("/bookings", async (res, req) => {
-  const userData = await getUserDataFromRequest(req);
-  res.json(await Booking.find({ user: userData.id }).populate("place"));
+app.get("/bookings", async (request, response) => {
+  const userData = await getUserDataFromRequest(request);
+  response.json(await Booking.find({ user: userData.id }).populate("place"));
 });
 
 app.listen(4000);

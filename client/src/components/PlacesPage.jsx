@@ -32,7 +32,7 @@ function PlacesPage() {
               key={place.title}
               className="flex cursor-pointer gap-3 mt-1 px-2 py-2 bg-gray-200 pt-3 rounded-2xl"
             >
-              <div className="flex gap-2 w-32 h-32 rounded-2xl bg-gray-300 grow shrink-0">
+              <div className="flex gap-2 w-fill h-32 rounded-2xl bg-gray-300 ">
                 {place.media.length > 0 && (
                   <img
                     className="object-cover rounded-2xl"

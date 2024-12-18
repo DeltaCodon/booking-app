@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const bookingSchema = new mongoose.Schema({
+const BookingSchema = new mongoose.Schema({
   place: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Place" },
   user: { type: mongoose.Schema.Types.ObjectId, required: true },
   checkIn: { type: String, required: true },
@@ -11,6 +11,6 @@ const bookingSchema = new mongoose.Schema({
   price: Number,
 });
 
-const BookingModel = mongoose.model("Booking", bookingSchema);
+const BookingModel = mongoose.model("Booking", BookingSchema);
 
 module.exports = BookingModel;

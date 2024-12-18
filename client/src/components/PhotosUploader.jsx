@@ -100,7 +100,6 @@ const PhotosUploader = ({ addedPhotos, whenChanged }) => {
               </button>
             </div>
           ))}
-        {/* https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg */}
         <label className=" h-32 cursor-pointer flex items-center gap-2 border bg-transparent border-2 rounded-2xl p-8 ">
           <img src={uploadIcon} width={20} className="" /> Upload
           <input
