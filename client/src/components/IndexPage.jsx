@@ -7,15 +7,15 @@ const IndexPage = () => {
 
   useEffect(() => {
     axios.get("/places").then((response) => {
-      // setPlaces(response.data);
-      setPlaces([
-        ...response.data,
-        ...response.data,
-        ...response.data,
-        ...response.data,
-        ...response.data,
-        ...response.data,
-      ]);
+      setPlaces(response.data);
+      // setPlaces([
+      //   ...response.data,
+      //   ...response.data,
+      //   ...response.data,
+      //   ...response.data,
+      //   ...response.data,
+      //   ...response.data,
+      // ]);
     });
   }, []);
 
@@ -23,7 +23,7 @@ const IndexPage = () => {
     <div className="mt-8 gap-6 gap-y-8 grid grid-cols-2 gird-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {places.length > 0 &&
         places.map((place) => (
-          <Link to={"/place/" + place._id}>
+          <Link key={place.title} to={"/place/" + place._id}>
             <div className="flex bg-gray-500 rounded-2xl">
               {place.media?.[0] && (
                 <img

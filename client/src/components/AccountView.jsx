@@ -21,7 +21,7 @@ const AccountPage = () => {
   }
 
   if (!ready) {
-    return "Loading...";
+    return `Loading... \n Refresh after 5 seconds`;
   }
   if (ready && !user && !redirect) {
     return <Navigate to={"/login"} />;
@@ -32,10 +32,13 @@ const AccountPage = () => {
   }
 
   return (
-    <div>
+    <div className="relative h-screen max-h-[40rem]">
       <AccountNavigation />
       {subpage === "profile" && (
-        <div onClick={logout} className="text-center max-w-lg mx-auto">
+        <div
+          onClick={logout}
+          className="text-center  mx-auto absolute bottom-0 left-[32%] right-[30%] grow "
+        >
           Logged in as ({user.name} {user.email})<br />
           <button className="bg-themeBlue w-24 rounded-full hover:bg-themeGold focus:outline-none focus:ring focus:ring-themeGold h-7">
             Logout

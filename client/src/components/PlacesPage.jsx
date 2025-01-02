@@ -30,19 +30,19 @@ function PlacesPage() {
             <Link
               to={"/account/places/" + place._id}
               key={place.title}
-              className="flex cursor-pointer gap-3 mt-1 px-2 py-2 bg-gray-200 pt-3 rounded-2xl"
+              className="flex cursor-pointer gap-4 mt-4 bg-gray-200 rounded-2xl"
             >
-              <div className="flex gap-2 w-fill h-32 rounded-2xl bg-gray-300 ">
+              <div className="flex gap-2 w-fill h-40 rounded-2xl bg-gray-300 ">
                 {place.media.length > 0 && (
                   <img
-                    className="object-cover rounded-2xl"
+                    className="object-cover h-full rounded-l-2xl"
                     src={"http://localhost:4000/uploads/" + place.media[0]}
                     alt="Pictures of unit"
                   />
                 )}
               </div>
               <div className="grow-0 shrink">
-                <h2 className="text-xl">{place.title}</h2>
+                <h2 className="text-xl font-semibold">{place.title}</h2>
                 <p className="text-sm mt-2 whitespace-pre-line">
                   {place.description}
                 </p>
